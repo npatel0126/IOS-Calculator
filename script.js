@@ -1,19 +1,22 @@
-//DOM Elements 
-const hourEl = document.querySelector('.hour');
-const minEl = document.querySelector('.minute');
-const valueEl = document.querySelector('.display')
+// Selecting DOM elements for different parts of the calculator
+const hourEl = document.querySelector('.hour'); // Displays the current hour
+const minEl = document.querySelector('.minute'); // Displays the current minute
+const valueEl = document.querySelector('.display'); // The main calculator display
 
-const acEl = document.querySelector('.acl');
-const pmEl = document.querySelector('.pm');
-const percentEl = document.querySelector('.percent');
+// Selecting functional buttons
+const acEl = document.querySelector('.acl'); // AC (All Clear) button
+const pmEl = document.querySelector('.pm'); // Plus/Minus toggle button
+const percentEl = document.querySelector('.percent'); // Percentage button
 
-const addEl = document.querySelector('.addition');
-const subEl = document.querySelector('.subtraction');
-const multiEl = document.querySelector('.multiplication');
-const divEl = document.querySelector('.division');
-const equalEl = document.querySelector('.equals');
+// Selecting operator buttons
+const addEl = document.querySelector('.addition'); // Addition button
+const subEl = document.querySelector('.subtraction'); // Subtraction button
+const multiEl = document.querySelector('.multiplication'); // Multiplication button
+const divEl = document.querySelector('.division'); // Division button
+const equalEl = document.querySelector('.equals'); // Equals button
 
-const deciEl = document.querySelector('.numberdel');
+// Selecting number and decimal buttons
+const deciEl = document.querySelector('.numberdel'); // Decimal point button
 const num0El = document.querySelector('.number0');
 const num1El = document.querySelector('.number1');
 const num2El = document.querySelector('.number2');
@@ -24,24 +27,29 @@ const num6El = document.querySelector('.number6');
 const num7El = document.querySelector('.number7');
 const num8El = document.querySelector('.number8');
 const num9El = document.querySelector('.number9');
+
+// Storing number elements in an array for easy access
 const numElArr = [num0El,num1El, num2El, num3El, num4El ,num5El, num6El, num7El, num8El, num9El];
 
-//Varibales
+// Variables to store the last entered number and the selected operator
 let strMemory = null;
 let operatorMemory = null;
 
-//Functions
+// Function to get the current value from the display as a string
 const getValueStr = () => valueEl.textContent.split(',').join('');
 
+// Function to convert the display value string to a number
 const getValueNum = () => {
     return parseFloat(getValueStr());
-}
+};
 
+// Function to update the display with a formatted number string
 const setStrValue = (valueStr) => {
     if (valueStr[valueStr.length - 1] === '.'){
         valueEl.textContent += '.';
         return;
     }
+    
     const [wholeNumStr, decimalStr] = valueStr.split('.');
     if (decimalStr){
         valueEl.textContent = parseFloat(wholeNumStr).toLocaleString() + '.' + decimalStr;
@@ -51,36 +59,39 @@ const setStrValue = (valueStr) => {
     }
 };
 
+// Handles number button clicks
 const numClick = (numStr) => {
     const currentStr = getValueStr();
     if (currentStr === '0'){
         setStrValue(numStr);
     }
     else{
-        setStrValue(currentStr + numStr)
+        setStrValue(currentStr + numStr);
     }
 }; 
 
+// Function to compute the result based on the operator selected
 const getStrResult = () =>{
     const currentNum = getValueNum();
     const numMemory = parseFloat(strMemory); 
     let newNum;
+    
     if (operatorMemory === 'addition'){
-        newNum = strMemory - (-currentNum);
+        newNum = numMemory + currentNum;
     }
     else if (operatorMemory === 'subtraction'){
-        newNum = strMemory - currentNum;
+        newNum = numMemory - currentNum;
     }
     else if (operatorMemory === 'multiplication'){
-        newNum = strMemory * currentNum;
+        newNum = numMemory * currentNum;
     }
     else if (operatorMemory === 'division'){
-        newNum = strMemory / currentNum;
+        newNum = numMemory / currentNum;
     }
     return newNum.toString();
 };
 
-
+// Handles operator button clicks
 const operatorClick = (operation) => {
     const currentStr = getValueStr();
     if (!strMemory){
@@ -94,9 +105,9 @@ const operatorClick = (operation) => {
     setStrValue('0');
 };
 
-//Event listeners for functions
+// Event listeners for function buttons
 acEl.addEventListener('click', () => {
-    setStrValue('0');
+    setStrValue('0'); // Reset display
     strMemory = null;
     operatorMemory = null;
 });
@@ -118,13 +129,13 @@ pmEl.addEventListener('click', () => {
 
 percentEl.addEventListener('click', () => {
     const currentNum = getValueNum();
-    const newNum = currentNum/100;
+    const newNum = currentNum / 100;
     setStrValue(newNum.toString());
     strMemory = null;
     operatorMemory = null;
 });
 
-//Event listens for operators
+// Event listeners for operator buttons
 addEl.addEventListener('click', ()=> {
     operatorClick('addition');
 });
@@ -136,9 +147,11 @@ subEl.addEventListener('click', ()=> {
 multiEl.addEventListener('click', ()=> {
     operatorClick('multiplication');
 });
+
 divEl.addEventListener('click', ()=> {
     operatorClick('division');
 });
+
 equalEl.addEventListener('click', ()=> {
     if (strMemory){
        setStrValue(getStrResult());
@@ -147,34 +160,37 @@ equalEl.addEventListener('click', ()=> {
     }
 });
 
-//Event listeners for numbers and decimal 
-for(let i=0; i < numElArr.length; i++){
+// Event listeners for number buttons
+for(let i = 0; i < numElArr.length; i++){
     const numEl = numElArr[i];
     numEl.addEventListener('click', () => {
         numClick(i.toString());
     });
 }
 
+// Event listener for decimal button
 deciEl.addEventListener('click', () => {
     const currentStr = getValueStr();
     if (!currentStr.includes('.')){
-        setStrValue (currentStr + '.');
+        setStrValue(currentStr + '.');
     }
 });
 
-//Time Set Up
+// Function to update the time display
 const updateTime = () => {
     const currentTime = new Date();
-
     let currentHour = currentTime.getHours();
     const currentMinute = currentTime.getMinutes();
 
-    if (currentHour>12){
+    // Convert 24-hour format to 12-hour format
+    if (currentHour > 12){
         currentHour -= 12;
     }
 
     hourEl.textContent = currentHour.toString();
-    minEl.textContent = currentMinute.toString().padStart(2, '0');
+    minEl.textContent = currentMinute.toString().padStart(2, '0'); // Ensure two-digit format
 }
+
+// Update the time every second
 setInterval(updateTime, 1000);
 updateTime();
