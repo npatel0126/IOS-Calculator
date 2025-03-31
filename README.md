@@ -1,4 +1,4 @@
-# IOS-Calculator
+# IOS-Calculator 🍎🧑‍💻📱
 
 A replica of the iOS calculator built using HTML, CSS, and JavaScript. This project mimics the design and functionality of the native iOS calculator app with additional features like real-time clock display.
 
